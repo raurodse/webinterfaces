@@ -1,0 +1,108 @@
+<html>
+<head>
+	<title>Entry page</title>
+	<link rel="stylesheet" href="{{ url_for('static',filename='base.css') }}">
+	<script type="text/javascript" src="{{ url_for('static',filename='jquery-1.10.2.min.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static',filename='jquery.form-validator.min.js') }}"></script>
+
+</head>
+<body>
+<!--<form action="reboot" class="reboot">
+ 	<input type="submit" value="Reboot interfaces">
+ </form>-->
+<h1>General Settings</h1>
+{% for item in list_interfaces%}
+{% if not serialized_interfaces[item].family is defined %}
+	{% set notdefined = "undefined" %}
+{%else%}
+	{% set notdefined = '' %}
+{% endif %}
+<form name="" action="update_info" method="POST" class="interface {{notdefined}}">
+	{% if serialized_interfaces[item].address is defined %}
+		{% set ip = serialized_interfaces[item].address[0] %}
+	{%else%}
+		{% set ip = '' %}
+	{% endif %}
+
+	{% if serialized_interfaces[item].gateway is defined %}
+		{% set gateway = serialized_interfaces[item].gateway[0] %}
+	{%else%}
+		{% set gateway = '' %}
+	{% endif %}
+
+	{% if serialized_interfaces[item].netmask is defined %}
+		{% set netmask = serialized_interfaces[item].netmask[0] %}
+	{%else%}
+		{% set netmask = '' %}
+	{% endif %}
+	{% if serialized_interfaces[item]['dns-nameservers'] is defined %}
+		{% set dns = serialized_interfaces[item]['dns-nameservers'] | join('\n') %}
+	{%else%}
+		{% set dns = '' %}
+	{% endif %}
+	<div id="lbname"><strong>{{ item }}</strong></div>
+	<input type="hidden" name="interface" value="{{ item }}"/>
+	<div><label class="nofloat">Auto-start interface</label>
+	<input type="checkbox" name="auto-start" {{ 'checked' if serialized_interfaces[item].auto }}>
+	</div>
+	<div>
+	<label>DHCP: </label>
+	<input id="dhcp" type="radio" name="method" value="dhcp" {{ 'checked' if serialized_interfaces[item].method == 'dhcp' }}>
+	<label class="nofloat">On</label>
+	<input id="static" type="radio" name="method" value="static" {{ 'checked' if serialized_interfaces[item].method == 'static' }}>
+	<label class="nofloat">Off</label>
+	</div>
+	<div><label>IP address:</label>
+	<input type="text" name="ip" value="{{ ip }}" data-validation="ip_validator">
+	</div>
+	<div>
+	<label>Subnet Mask:</label>
+	<input type="text" name="mask" value="{{ netmask }}" data-validation="ip_validator">
+	</div>
+	<div>
+	<label>Gateway:</label>
+	<input type="text" name="gateway" value="{{ gateway }}" data-validation="ip_validator" data-validation-optional="true">
+	</div>
+	<div>
+	<label>DNS Servers:</label>
+	<textarea name="dns" data-validation="ip_validator_multiline" data-validation-optional="true">{{dns}}
+	</textarea>
+	</div>
+	<div class="submit">
+		<input type="reset" name="action" value="Reset"/>
+		<input type="submit" name="action" value="Save"/>
+		<input type="submit" name="action" value="Delete" onclick="return confirm('Want to delete?');"/>
+	</div>
+</form>
+{% endfor%}
+<script>
+// Add validation
+$.formUtils.addValidator({
+	name : 'ip_validator',
+	validatorFunction : function(value, $el, config, language, $form) {
+	ipformat = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
+	//ipformat = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/; 
+	var x = ($($form).find("input[name='method']:checked").val());
+	if (x === 'dhcp'){
+		return true;
+	}
+	return value.match(ipformat);
+	},
+	errorMessage : 'Not a valid ip',
+	errorMessageKey: 'badEvenNumber'
+	});
+$.formUtils.addValidator({
+	name : 'ip_validator_multiline',
+	validatorFunction : function(value, $el, config, language, $form) {
+	ipformat = "^((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\n?)\+$"
+	//ipformat = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/; 
+	return value.match(ipformat);
+	},
+	errorMessage : 'Not a valid ip',
+	errorMessageKey: 'badEvenNumber'
+	});
+ $.validate(); 
+ </script>
+ 
+</body>
+</html>

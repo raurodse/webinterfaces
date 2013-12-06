@@ -1,0 +1,42 @@
+body{ background-color  : #eee}
+
+
+form.interface{
+	background-color: #bfb;
+	display: inline-block;
+	margin: 10px;
+	box-shadow: 0px 0 5px;
+	padding: 5px;
+}
+form.undefined{
+	background-color: #fbb;
+}
+.submit{
+	text-align: center;
+	margin: 5px 0;
+}
+#lbname{
+	text-align: center;
+	padding: 0px;
+	border-bottom: 1px solid black;
+}
+.error{
+	background-color: #faa;
+	font-weight: bolder;
+	border-width: 2px;
+	border-radius: 5px;
+}
+span.form-error{color: red}
+label{float: left;width: 120px;}
+input[type=text], textarea{ width: 110px;}
+input[type=submit],input[type=reset]{min-width: 75px; min-height: 30px; font-weight: bold;}
+label.nofloat{float: none;}
+div{padding: 3px;}
+textarea{resize: none;}
+
+form.reboot{text-align: center;float: right;}
+form.reboot input[type=submit] { color:red; min-height: 50px}
+div.center {width: 300px; }
+div.center pre{border: 2px solid black; padding: 20px}
+div.center div{text-align: center;}
+div.center div input{height: 40px;width: 60px;}

@@ -1,0 +1,16 @@
+auto lo
+iface lo inet loopback
+	
+auto eth0
+iface eth0 inet dhcp
+	
+auto eth1
+iface eth1 inet static
+	address 10.0.0.10
+	netmask 255.255.255.0
+	gateway 10.0.0.1
+	dns-nameservers 8.8.8.8
+	dns-nameservers 4.4.4.4
+	dns-nameservers 3.3.3.3
+auto enp2s0
+iface enp2s0 inet dhcp
